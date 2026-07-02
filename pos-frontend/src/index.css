@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50 font-sans text-gray-800 antialiased;
+  }
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #ticket-imprimible,
+  #ticket-imprimible * ,
+  #corte-imprimible,
+  #corte-imprimible * {
+    visibility: visible;
+  }
+  #ticket-imprimible,
+  #corte-imprimible {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80mm;
+  }
+}
