@@ -2,7 +2,6 @@
 // Carga env primero para que cualquier módulo que importe config/env.js
 // encuentre las variables ya validadas.
 require('./config/env');
-import { montarSwagger } from './docs/swagger.js';
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
