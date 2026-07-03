@@ -27,10 +27,24 @@ app.get('/api-docs.json', (_req, res) => res.json(openapiDocument));
 // --- Seguridad ---
 app.use(helmet());
 
-// --- CORS: ajustar origenes según entorno de despliegue ---
+// --- CORS: acepta una lista de orígenes separados por coma en CORS_ORIGIN,
+// para soportar a la vez el dominio de producción y las URLs de vista previa
+// que Vercel genera por rama/PR, sin tener que editar código por cada una.
+const origenesPermitidos = (process.env.CORS_ORIGIN || 'http://localhost:5173')
+  .split(',')
+  .map((origen) => origen.trim())
+  .filter(Boolean);
+
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+    origin(origen, callback) {
+      // Peticiones sin header Origin (curl, Postman, server-to-server) se permiten.
+      if (!origen || origenesPermitidos.includes(origen)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origen no permitido por CORS: ${origen}`));
+      }
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
